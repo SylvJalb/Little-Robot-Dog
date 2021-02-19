@@ -119,7 +119,7 @@ int main () {
         return 1 ;
 	}
 
-    int Speed = 500; // time of a loop in ms
+    //int Speed = 500; // time of a loop in ms
 
     pinMode(FRU, OUTPUT);
     pinMode(FRL, OUTPUT);
