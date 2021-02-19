@@ -76,12 +76,12 @@ int getDegrees(unsigned int leg, float xB, float yB, float* topDegree, float* bo
         return 0;
     }
 
-    float delta = sqrtf( (b*b) - (4*a*c) ); // Δ = √(b²-4ac)
+    float delta = sqrt( (double)((b*b) - (4*a*c)) ); // Δ = √(b²-4ac)
 
     //solutions
     if(delta > 0){
-        xKnee = (0 - b - sqrtf(delta)) / (2*a);
-        x2 = (0 - b + sqrtf(delta)) / (2*a);
+        xKnee = (0 - b - sqrt((double)delta)) / (2*a);
+        x2 = (0 - b + sqrt((double)delta)) / (2*a);
     } else {
         if(delta == 0){
             xKnee = (0-b) / (2*a);
@@ -97,16 +97,16 @@ int getDegrees(unsigned int leg, float xB, float yB, float* topDegree, float* bo
 
     ////////////////////////////////////////////////////////
     // Calculate the y intersections of the two circles : // (the x Knee postition)
-    float yKnee = yA + sqrtf( (rA*rA) - ((xKnee-xA)*(xKnee-xA)) ) ; //first result
-    if(yKnee != yB + sqrtf( (rB*rB) - ((xKnee-xB)*(xKnee-xB)) ) )
-        yKnee = yA - sqrtf( (rA*rA) - ((xKnee-xA)*(xKnee-xA)) ); //second result
+    float yKnee = yA + sqrt( (double)((rA*rA) - ((xKnee-xA)*(xKnee-xA))) ) ; //first result
+    if(yKnee != yB + sqrt( (double)((rB*rB) - ((xKnee-xB)*(xKnee-xB))) ) )
+        yKnee = yA - sqrt( (double)((rA*rA) - ((xKnee-xA)*(xKnee-xA))) ); //second result
 
 
     ////////////////////////////////////////////
     // Calculate the angle of 2 servomotors : //
-    float topA = sqrtf( (xKnee+(rA+rB))*(xKnee+(rA+rB)) + yKnee*yKnee );
+    float topA = sqrt( (double)((xKnee+(rA+rB))*(xKnee+(rA+rB)) + yKnee*yKnee) );
     float topB = rA + rB;
-    float botA = sqrtf( xKnee*xKnee + yKnee*yKnee );
+    float botA = sqrt( (double)(xKnee*xKnee + yKnee*yKnee) );
     *topDegree = acosf((topB*topB + rA*rA - topA*topA) / (2*topB*rA));
     *botDegree = acosf((rB*rB + rA*rA - botA*botA) / (2*rB*rA));
 
