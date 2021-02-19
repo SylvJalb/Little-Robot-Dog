@@ -2,7 +2,7 @@
 #Auteur Sylvain Jalbert
 #Date 15 fevrier 2021
 
-CC = gcc -Wall
+CC = gcc -Wall -lwiringPi -lm
 RM = rm -f
 srcdir = src/
 bindir = bin/
