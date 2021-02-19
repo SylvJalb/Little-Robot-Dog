@@ -5,7 +5,6 @@
 #include <math.h>
 
 #include <wiringPi.h>
-#include <softServo.h>
 
 //The 4 legs
 #define FR 0 //FR  =  Front Right leg
@@ -40,8 +39,8 @@
 
 // Function that move servo motors to given degrees
 void moveToDegrees(unsigned int legTop, float degreeTop, float degreeBot){
-    softServoWrite ((int)legTop,   (int)(1000 + (degreeTop * 1000 / 180)));
-    softServoWrite ((int)legTop+1, (int)(1000 + (degreeBot * 1000 / 180)));
+    pwmWrite ((int)legTop,   (int)degreeTop);
+    pwmWrite ((int)legTop+1, (int)degreeBot);
 }
 
 // Function that retrieves the degrees for the servos from x and y coordinates
@@ -122,7 +121,18 @@ int main () {
 
     int Speed = 500; // time of a loop in ms
 
-	softServoSetup (FRU, FRL, FLU, FLL, BRU, BRL, BLU, BLL) ;
+    pinMode(FRU, OUTPUT);
+    pinMode(FRL, OUTPUT);
+    pinMode(FLU, OUTPUT);
+    pinMode(FLL, OUTPUT);
+    pinMode(BRU, OUTPUT);
+    pinMode(BRL, OUTPUT);
+    pinMode(BLU, OUTPUT);
+    pinMode(BLL, OUTPUT);
+
+    pwmSetMode(PWM_MODE_MS);
+    pwmSetClock(384); //clock at 50kHz (20us tick)
+    pwmSetRange(1000); //range at 1000 ticks (20ms)
 
     float topDegree;
     float botDegree;
