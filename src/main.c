@@ -24,19 +24,19 @@
 #define BLL 7 //BLL  =  Back  Left  Lower leg
 
 //*********NEUTRAL*STAND*CALIBRATION****************
-#define NEUTRALFRU = 60;   // You need to calibrate this to your Greyhound
-#define NEUTRALFRL = 6;    // All the legs need to be in the normal standing position
-#define NEUTRALFLU = 75;   //
-#define NEUTRALFLL = 178;  //
-#define NEUTRALBRU = 28;   //
-#define NEUTRALBRL = 132;  //
-#define NEUTRALBLU = 125;  //
-#define NEUTRALBLL = 45;   //
+#define NEUTRALFRU 60;   // You need to calibrate this to your Greyhound
+#define NEUTRALFRL 6;    // All the legs need to be in the normal standing position
+#define NEUTRALFLU 75;   //
+#define NEUTRALFLL 178;  //
+#define NEUTRALBRU 28;   //
+#define NEUTRALBRL 132;  //
+#define NEUTRALBLU 125;  //
+#define NEUTRALBLL 45;   //
 
-#define LENGTHFU = 58.0;  // Length of Front Upper legs
-#define LENGTHFL = 133.0; // Length of Front Lower legs
-#define LENGTHBU = 78.0;  // Length of Back  Upper legs
-#define LENGTHBL = 92.0;  // Length of Back  Lower legs
+#define LENGTHFU 58.0;  // Length of Front Upper legs
+#define LENGTHFL 133.0; // Length of Front Lower legs
+#define LENGTHBU 78.0;  // Length of Back  Upper legs
+#define LENGTHBL 92.0;  // Length of Back  Lower legs
 
 // Function that move servo motors to given degrees
 void moveToDegrees(unsigned int legTop, float degreeTop, float degreeBot){
@@ -130,7 +130,7 @@ int main () {
     // GO TO INITIAL POSITION
     for(unsigned int i = FRU ; i <= BLL ; i += 2){
         float xPos = 0 - ( i <= FLL ? LENGTHFU + LENGTHFL : LENGTHBU + LENGTHBL);
-        if(getDegrees(unsigned int leg, xPos, 0.0, topDegree, botDegree) != 0){
+        if(getDegrees(i, xPos, 0.0, topDegree, botDegree) != 0){
             moveToDegrees(i, topDegree, botDegree);
         }
     }
