@@ -5,6 +5,7 @@
 #include <math.h>
 
 #include <wiringPi.h>
+#include <softPwm.h>
 
 //The 4 legs
 #define FR 0 //FR  =  Front Right leg
@@ -134,16 +135,36 @@ int main () {
     pwmSetClock(384); //clock at 50kHz (20us tick)
     pwmSetRange(1000); //range at 1000 ticks (20ms)
 
-    float topDegree;
-    float botDegree;
+    printf("ok1");
+
+    softPwmCreate(FRU,50,1000);
+    softPwmCreate(FRL,50,1000);
+    softPwmCreate(FLU,50,1000);
+    softPwmCreate(FLL,50,1000);
+    softPwmCreate(BRU,50,1000);
+    softPwmCreate(BRL,50,1000);
+    softPwmCreate(BLU,50,1000);
+    softPwmCreate(BLL,50,1000);
+
+    printf("ok2");
+
+    //float topDegree;
+    //float botDegree;
 
     // GO TO INITIAL POSITION
+    /*
     for(unsigned int i = FRU ; i <= BLL ; i += 2){
         float xPos = 0 - ( i <= FLL ? LENGTHFU + LENGTHFL : LENGTHBU + LENGTHBL);
         if(getDegrees(i, xPos, 0.0, &topDegree, &botDegree) != 0){
             moveToDegrees(i, topDegree, botDegree);
         }
     }
+    */
 
 	delay (2000) ;
+
+    pwmWrite (FRU, 150);
+    pwmWrite (FRL, 150);
+
+    printf("ok3");
 }
