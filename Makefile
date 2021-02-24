@@ -20,7 +20,7 @@ PROG = robotdog
 all : $(PROG)
 
 $(PROG) : $(OBJ) #Compilation du programme
-	$(CC) -o $^ $@ $(LDFLAGS) $(LDLIBS)
+	$(CC) $^ -o $@ $(LDFLAGS) $(LDLIBS)
 
 ./bin/%.o : ./src/%.c #Compilation des objets
 	$(CC) -c $(CFLAGS) $^ -o $@

@@ -42,14 +42,11 @@
 #define LENGTHBU 78.0  // Length of Back  Upper legs
 #define LENGTHBL 92.0  // Length of Back  Lower legs
 
-int calcTicks(float impulseMs, int hertz)
-{
-	float cycleMs = 1000.0f / hertz;
-	return (int)(MAX_PWM * impulseMs / cycleMs + 0.5f);
-}
-
-// Function that move servo motors to given degrees
-void moveToDegrees(unsigned int legTop, float degreeTop, float degreeBot){
+// Function that move servo motor to given degree
+void moveToDegree(unsigned int servo, float degree){
+    int tick = MAX_PWM * degree / 180;
+	pwmWrite(servo + 16, tick);
+    printf("Serv %d to %d \n", servo, tick);
 }
 
 // Function that retrieves the degrees for the servos from x and y coordinates
@@ -137,8 +134,6 @@ int main () {
 
     //int Speed = 500; // time of a loop in ms
 
-    printf("ok1");
-
     /*
     pwmWrite(FRU,0);
     pwmWrite(FRL,0);
@@ -150,12 +145,8 @@ int main () {
     pwmWrite(BLL,0);
     */
 
-	int tick = calcTicks(1, HERTZ);
-	pwmWrite(PIN_BASE + 16, tick);
-    printf(tick);
+    moveToDegree(16, 0);
 	delay(2000);
-
-    printf("ok2");
 
     //float topDegree;
     //float botDegree;
@@ -170,9 +161,9 @@ int main () {
     }
     */
 
-    pwmWrite(PIN_BASE + 16, 1024);
+    moveToDegree(16, 180);
 
-    printf("ok3");
+    printf("ok Final\n");
 
     return 0;
 }
