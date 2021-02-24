@@ -4,7 +4,8 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include "pca9685.h"
+#include <wiringPi.h>
+#include <pca9685.h>
 
 #define PIN_BASE 300
 #define MAX_PWM 4096
@@ -116,7 +117,7 @@ int getDegrees(unsigned int leg, float xB, float yB, float* topDegree, float* bo
 }
 
 int main () {
-	if (wiringPiSetup () == -1) {
+	if (wiringPiSetup() == -1) {
         fprintf (stdout, "oops: %s\n", strerror (errno)) ;
         return 1 ;
 	}
@@ -148,7 +149,6 @@ int main () {
     */
 
 	pwmWrite(PIN_BASE + 16, 0);
-	delay(2000);
 
     printf("ok2");
 

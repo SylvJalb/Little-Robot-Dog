@@ -8,6 +8,14 @@ https://github.com/Reinbert/pca9685
 
 >sudo apt-get install -y i2c-tools
 
+PCA9685
+
+>git clone https://github.com/Reinbert/pca9685.git
+
+>cd ./pca9685/src
+
+>sudo make install
+
 ## Enable I2C interface 
 >sudo raspi-config
 
