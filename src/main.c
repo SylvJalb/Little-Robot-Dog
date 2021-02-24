@@ -42,6 +42,12 @@
 #define LENGTHBU 78.0  // Length of Back  Upper legs
 #define LENGTHBL 92.0  // Length of Back  Lower legs
 
+int calcTicks(float impulseMs, int hertz)
+{
+	float cycleMs = 1000.0f / hertz;
+	return (int)(MAX_PWM * impulseMs / cycleMs + 0.5f);
+}
+
 // Function that move servo motors to given degrees
 void moveToDegrees(unsigned int legTop, float degreeTop, float degreeBot){
 }
@@ -117,15 +123,11 @@ int getDegrees(unsigned int leg, float xB, float yB, float* topDegree, float* bo
 }
 
 int main () {
-	if (wiringPiSetup() == -1) {
-        fprintf (stdout, "oops: %s\n", strerror (errno)) ;
-        return 1 ;
-	}
+	wiringPiSetup();
 
     // Setup with pinbase 300 and i2c location 0x40
 	int fd = pca9685Setup(PIN_BASE, 0x40, HERTZ);
-	if (fd < 0)
-	{
+	if (fd < 0) {
 		printf("Error in setup\n");
 		return fd;
 	}
@@ -148,7 +150,10 @@ int main () {
     pwmWrite(BLL,0);
     */
 
-	pwmWrite(PIN_BASE + 16, 0);
+	int tick = calcTicks(1, HERTZ);
+	pwmWrite(PIN_BASE + 16, tick);
+    printf(tick);
+	delay(2000);
 
     printf("ok2");
 
@@ -165,9 +170,7 @@ int main () {
     }
     */
 
-	delay(4000);
-
-    pwmWrite(PIN_BASE + 16, 4096);
+    pwmWrite(PIN_BASE + 16, 1024);
 
     printf("ok3");
 
