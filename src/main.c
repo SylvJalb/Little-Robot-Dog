@@ -35,7 +35,7 @@
 
 // Function that move servo motor to given degree
 void moveToDegree(unsigned int servo, float degree){
-    int tick = (int)(((degree / 180.0) * PWM_RANGE_MAX - PWM_RANGE_MIN) + PWM_RANGE_MIN);
+    int tick = (int)(((degree / 180.0) * (PWM_RANGE_MAX - PWM_RANGE_MIN)) + PWM_RANGE_MIN);
 	pwmWrite(PIN_BASE + servo, tick);
     printf("Serv %d to %d \n", servo, tick);
 }
