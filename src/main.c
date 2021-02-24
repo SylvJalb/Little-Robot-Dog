@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
+#include <unistd.h>
 
 #include "pca9685.h"
 
@@ -112,7 +113,7 @@ int getDegrees(unsigned int leg, float xB, float yB, float* topDegree, float* bo
 }
 
 int main () {
-	if (pca9685Setup (300, 0x40, 50) == -1) {
+	if (wiringPiSetup () == -1 || pca9685Setup (300, 0x40, 50) == -1) {
         fprintf (stdout, "oops: %s\n", strerror (errno)) ;
         return 1 ;
 	}
@@ -145,9 +146,11 @@ int main () {
     }
     */
 
-	delay (2000) ;
+	sleep(4);
 
     pwmWrite(FRU,4096);
 
     printf("ok3");
+
+    return 0;
 }
