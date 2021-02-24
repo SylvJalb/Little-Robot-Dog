@@ -42,9 +42,10 @@
 #define LENGTHBU 78.0  // Length of Back  Upper legs
 #define LENGTHBL 92.0  // Length of Back  Lower legs
 
+float factor = MAX_PWM / (1000 / HERTZ);
 // Function that move servo motor to given degree
 void moveToDegree(unsigned int servo, float degree){
-    int tick = MAX_PWM * degree / 180;
+    int tick = (int)(((degree / 180.0) + 1.0) * factor);
 	pwmWrite(servo + 16, tick);
     printf("Serv %d to %d \n", servo, tick);
 }
