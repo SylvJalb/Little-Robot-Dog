@@ -46,7 +46,7 @@ float factor = MAX_PWM / (1000 / HERTZ);
 // Function that move servo motor to given degree
 void moveToDegree(unsigned int servo, float degree){
     int tick = (int)(((degree / 180.0) + 1.0) * factor);
-	pwmWrite(servo + 16, tick);
+	pwmWrite(PIN_BASE + servo, tick);
     printf("Serv %d to %d \n", servo, tick);
 }
 
