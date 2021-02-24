@@ -3,9 +3,12 @@
 #include <string.h>
 #include <stdlib.h>
 #include <math.h>
-#include <unistd.h>
 
 #include "pca9685.h"
+
+#define PIN_BASE 300
+#define MAX_PWM 4096
+#define HERTZ 50
 
 //The 4 legs
 #define FR 0 //FR  =  Front Right leg
@@ -113,15 +116,27 @@ int getDegrees(unsigned int leg, float xB, float yB, float* topDegree, float* bo
 }
 
 int main () {
-	if (wiringPiSetup () == -1 || pca9685Setup (300, 0x40, 50) == -1) {
+	if (wiringPiSetup () == -1) {
         fprintf (stdout, "oops: %s\n", strerror (errno)) ;
         return 1 ;
 	}
+
+    // Setup with pinbase 300 and i2c location 0x40
+	int fd = pca9685Setup(PIN_BASE, 0x40, HERTZ);
+	if (fd < 0)
+	{
+		printf("Error in setup\n");
+		return fd;
+	}
+
+	// Reset all output
+	pca9685PWMReset(fd);
 
     //int Speed = 500; // time of a loop in ms
 
     printf("ok1");
 
+    /*
     pwmWrite(FRU,0);
     pwmWrite(FRL,0);
     pwmWrite(FLU,0);
@@ -130,6 +145,10 @@ int main () {
     pwmWrite(BRL,0);
     pwmWrite(BLU,0);
     pwmWrite(BLL,0);
+    */
+
+	pwmWrite(PIN_BASE + 16, 0);
+	delay(2000);
 
     printf("ok2");
 
@@ -146,9 +165,9 @@ int main () {
     }
     */
 
-	sleep(4);
+	delay(4000);
 
-    pwmWrite(FRU,4096);
+    pwmWrite(PIN_BASE + 16, 4096);
 
     printf("ok3");
 
