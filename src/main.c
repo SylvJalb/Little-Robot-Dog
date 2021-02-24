@@ -8,7 +8,8 @@
 #include <pca9685.h>
 
 #define PIN_BASE 300
-#define MAX_PWM 4096
+#define PWM_RANGE_MIN 101 // tick when servo is at 0°
+#define PWM_RANGE_MAX 599 // tick when servo is at 180°
 #define HERTZ 50
 
 //The 4 legs
@@ -27,25 +28,14 @@
 #define BLU 6 //BLU  =  Back  Left  Upper leg
 #define BLL 7 //BLL  =  Back  Left  Lower leg
 
-//*********NEUTRAL*STAND*CALIBRATION****************
-#define NEUTRALFRU 60   // You need to calibrate this to your Greyhound
-#define NEUTRALFRL 6    // All the legs need to be in the normal standing position
-#define NEUTRALFLU 75   //
-#define NEUTRALFLL 178  //
-#define NEUTRALBRU 28   //
-#define NEUTRALBRL 132  //
-#define NEUTRALBLU 125  //
-#define NEUTRALBLL 45   //
-
 #define LENGTHFU 58.0  // Length of Front Upper legs
 #define LENGTHFL 133.0 // Length of Front Lower legs
 #define LENGTHBU 78.0  // Length of Back  Upper legs
 #define LENGTHBL 92.0  // Length of Back  Lower legs
 
-float factor = MAX_PWM / (1000 / HERTZ);
 // Function that move servo motor to given degree
 void moveToDegree(unsigned int servo, float degree){
-    int tick = (int)(((degree / 180.0) + 1.0) * factor);
+    int tick = (int)(((degree / 180.0) * PWM_RANGE_MAX - PWM_RANGE_MIN) + PWM_RANGE_MIN);
 	pwmWrite(PIN_BASE + servo, tick);
     printf("Serv %d to %d \n", servo, tick);
 }
@@ -147,7 +137,7 @@ int main () {
     */
 
     moveToDegree(16, 0);
-	delay(2000);
+	delay(1800000); //wait 30 minutes
 
     //float topDegree;
     //float botDegree;
@@ -161,8 +151,6 @@ int main () {
         }
     }
     */
-
-    moveToDegree(16, 180);
 
     printf("ok Final\n");
 
