@@ -4,8 +4,7 @@
 #include <stdlib.h>
 #include <math.h>
 
-#include <wiringPi.h>
-#include <softPwm.h>
+#include "pca9685.h"
 
 //The 4 legs
 #define FR 0 //FR  =  Front Right leg
@@ -40,8 +39,6 @@
 
 // Function that move servo motors to given degrees
 void moveToDegrees(unsigned int legTop, float degreeTop, float degreeBot){
-    pwmWrite ((int)legTop,   (int)degreeTop);
-    pwmWrite ((int)legTop+1, (int)degreeBot);
 }
 
 // Function that retrieves the degrees for the servos from x and y coordinates
@@ -115,36 +112,23 @@ int getDegrees(unsigned int leg, float xB, float yB, float* topDegree, float* bo
 }
 
 int main () {
-	if (wiringPiSetup () == -1) {
+	if (pca9685Setup (300, 0x40, 50) == -1) {
         fprintf (stdout, "oops: %s\n", strerror (errno)) ;
         return 1 ;
 	}
 
     //int Speed = 500; // time of a loop in ms
 
-    pinMode(FRU, OUTPUT);
-    pinMode(FRL, OUTPUT);
-    pinMode(FLU, OUTPUT);
-    pinMode(FLL, OUTPUT);
-    pinMode(BRU, OUTPUT);
-    pinMode(BRL, OUTPUT);
-    pinMode(BLU, OUTPUT);
-    pinMode(BLL, OUTPUT);
-
-    pwmSetMode(PWM_MODE_MS);
-    pwmSetClock(384); //clock at 50kHz (20us tick)
-    pwmSetRange(1000); //range at 1000 ticks (20ms)
-
     printf("ok1");
 
-    softPwmCreate(FRU,50,1000);
-    softPwmCreate(FRL,50,1000);
-    softPwmCreate(FLU,50,1000);
-    softPwmCreate(FLL,50,1000);
-    softPwmCreate(BRU,50,1000);
-    softPwmCreate(BRL,50,1000);
-    softPwmCreate(BLU,50,1000);
-    softPwmCreate(BLL,50,1000);
+    pwmWrite(FRU,0);
+    pwmWrite(FRL,0);
+    pwmWrite(FLU,0);
+    pwmWrite(FLL,0);
+    pwmWrite(BRU,0);
+    pwmWrite(BRL,0);
+    pwmWrite(BLU,0);
+    pwmWrite(BLL,0);
 
     printf("ok2");
 
@@ -163,8 +147,7 @@ int main () {
 
 	delay (2000) ;
 
-    pwmWrite (FRU, 150);
-    pwmWrite (FRL, 150);
+    pwmWrite(FRU,4096);
 
     printf("ok3");
 }
