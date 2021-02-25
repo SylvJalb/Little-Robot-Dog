@@ -28,6 +28,12 @@
 #define BLU 6 //BLU  =  Back  Left  Upper leg
 #define BLL 7 //BLL  =  Back  Left  Lower leg
 
+//The legs Gap
+#define FURGAP 40 // Front Upper Right leg degree Gap
+#define FULGAP 40 // Front Upper Left  leg degree Gap
+#define BURGAP 35 // Back  Upper Right leg degree Gap
+#define BULGAP 35 // Back  Upper Left  leg degree Gap
+
 #define LENGTHFU 58.0  // Length of Front Upper legs
 #define LENGTHFL 133.0 // Length of Front Lower legs
 #define LENGTHBU 78.0  // Length of Back  Upper legs
@@ -37,7 +43,7 @@
 void moveToDegree(unsigned int servo, float degree){
     int tick = (int)(((degree / 180.0) * (PWM_RANGE_MAX - PWM_RANGE_MIN)) + PWM_RANGE_MIN);
 	pwmWrite(PIN_BASE + servo, tick);
-    printf("Serv %d to %d \n", servo, tick);
+    printf("Servo n°%d to the position : %f degree -> %d tick\n", servo, degree, tick);
 }
 
 // Function that retrieves the degrees for the servos from x and y coordinates
@@ -83,7 +89,8 @@ int getDegrees(unsigned int leg, float xB, float yB, float* topDegree, float* bo
             xKnee = (0-b) / (2*a);
         } else {
             // there is no solution, the two circles do not intersect, impossible movement
-            return 0; //return false
+            printf("Impossible position ! (%f , %f)", xB, yB);
+            return -1;
         }
     }
     // if we have 2 solutions, Knee position is intersection with the largest x :
@@ -105,14 +112,39 @@ int getDegrees(unsigned int leg, float xB, float yB, float* topDegree, float* bo
     float botA = sqrt( (double)(xKnee*xKnee + yKnee*yKnee) );
     *topDegree = acosf((topB*topB + rA*rA - topA*topA) / (2*topB*rA));
     *botDegree = acosf((rB*rB + rA*rA - botA*botA) / (2*rB*rA));
+    // ajust to the real degrees
+    switch(leg){
+        case FR :
+            *topDegree += FURGAP;
+            break;
+        case FL :
+            *topDegree -= FULGAP;
+            break;
+        case BR :
+            *topDegree += BURGAP;
+            break;
+        case BL :
+            *topDegree -= BULGAP;
+            break;
+        default:
+            //param leg is not a leg !
+            printf("param leg = %d is not a leg !", (int)leg);
+            return -2;
+    }
+    //If impossible degrees
+    if(*topDegree > 180 || *topDegree < 0 || *botDegree > 180 || *botDegree < 0){
+        printf("Impossible degrees ! (upper : %f , lower : %f)", *topDegree, *botDegree);
+        return -3;
+    }
+
 
     //all went well
-    return 1; //return true
+    return 0;
 }
 
 int main () {
+    // Setup wiringPi
 	wiringPiSetup();
-
     // Setup with pinbase 300 and i2c location 0x40
 	int fd = pca9685Setup(PIN_BASE, 0x40, HERTZ);
 	if (fd < 0) {
@@ -125,32 +157,21 @@ int main () {
 
     //int Speed = 500; // time of a loop in ms
 
-    /*
-    pwmWrite(FRU,0);
-    pwmWrite(FRL,0);
-    pwmWrite(FLU,0);
-    pwmWrite(FLL,0);
-    pwmWrite(BRU,0);
-    pwmWrite(BRL,0);
-    pwmWrite(BLU,0);
-    pwmWrite(BLL,0);
-    */
-
     moveToDegree(16, 0);
 	delay(1800000); //wait 30 minutes
 
-    //float topDegree;
-    //float botDegree;
+    float topDegree;
+    float botDegree;
 
     // GO TO INITIAL POSITION
-    /*
-    for(unsigned int i = FRU ; i <= BLL ; i += 2){
-        float xPos = 0 - ( i <= FLL ? LENGTHFU + LENGTHFL : LENGTHBU + LENGTHBL);
-        if(getDegrees(i, xPos, 0.0, &topDegree, &botDegree) != 0){
-            moveToDegrees(i, topDegree, botDegree);
+    for(unsigned int i = FR ; i <= BL ; i += 1){
+        if(getDegrees(i, 0.0, -150.0, &topDegree, &botDegree) != 0){
+            pca9685PWMReset(fd);
+            return 1;
         }
+        moveToDegrees(i*2     , topDegree);
+        moveToDegrees(i*2 + 1 , topDegree);
     }
-    */
 
     printf("ok Final\n");
 
