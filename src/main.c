@@ -57,11 +57,14 @@ int getDegrees(unsigned int leg, float xB, float yB, float* topDegree, float* bo
     float xA = 0.0;
     float yA = 0.0;
 
+    if(sqrt( (double) (xB*xB + yB*yB) ) > (rA + rB)){
+        // there is no solution, the two circles do not intersect, impossible movement
+        printf("Impossible position ! (%f , %f)\n", xB, yB);
+        return -1;
+    }
+
     ////////////////////////////////////////////////////////
     // Calculate the x intersections of the two circles : // (the x Knee postition)
-    float xKnee = -1.0 ; //first result
-    float x2 = -1.0 ;    //second result
-
     float a;
     float b;
     float c;
@@ -74,44 +77,37 @@ int getDegrees(unsigned int leg, float xB, float yB, float* topDegree, float* bo
         c = (xB*xB) + (yB*yB) + (N*N) - (rA*rA) - (2*yA*N);
     } else {
         // don't div by 0
-        // temporary exit with error
-        return 0;
+        printf("Div by 0 ! => yA == yB !\n");
+        return -1;
     }
 
-    float delta = (b*b) - (4*a*c); // Δ = b²-4ac
+    float rdelta = sqrt( (double) ((b*b) - (4*a*c)) ); // √Δ = √(b²-4ac)
 
     //solutions
-    if(delta > 0){
-        xKnee = (0 - b - sqrt((double)delta)) / (2*a);
-        x2 = (0 - b + sqrt((double)delta)) / (2*a);
-    } else {
-        if(delta == 0){
-            xKnee = (0-b) / (2*a);
-        } else {
-            // there is no solution, the two circles do not intersect, impossible movement
-            printf("Impossible position ! (%f , %f)", xB, yB);
-            return -1;
-        }
-    }
+    float xKnee = (0 - b - rdelta) / (2*a);
+    float x2 = (0 - b + rdelta) / (2*a);
+
     // if we have 2 solutions, Knee position is intersection with the largest x :
-    if(x2 != -1.0)
-        xKnee = ( xKnee > x2 ? xKnee : x2 ); // get the largest x
+    if(xKnee > x2)
+        xKnee = x2; // get the largest x
 
 
     ////////////////////////////////////////////////////////
     // Calculate the y intersections of the two circles : // (the x Knee postition)
-    float yKnee = yA + sqrt( (double)((rA*rA) - ((xKnee-xA)*(xKnee-xA))) ) ; //first result
-    if(yKnee != yB + sqrt( (double)((rB*rB) - ((xKnee-xB)*(xKnee-xB))) ) )
-        yKnee = yA - sqrt( (double)((rA*rA) - ((xKnee-xA)*(xKnee-xA))) ); //second result
+    float yKnee = yA + sqrt( fabs( (double)((rA*rA) - ((xKnee-xA)*(xKnee-xA))) ) ) ; //first result
+    if(yKnee != yB + sqrt( fabs( (double)((rB*rB) - ((xKnee-xB)*(xKnee-xB))) ) ) )
+        yKnee = yA - sqrt( fabs( (double)((rA*rA) - ((xKnee-xA)*(xKnee-xA))) ) ); //second result
 
 
     ////////////////////////////////////////////
     // Calculate the angle of 2 servomotors : //
-    float topA = sqrt( (double)((xKnee+(rA+rB))*(xKnee+(rA+rB)) + yKnee*yKnee) );
-    float topB = rA + rB;
-    float botA = sqrt( (double)(xKnee*xKnee + yKnee*yKnee) );
-    *topDegree = acosf((topB*topB + rA*rA - topA*topA) / (2*topB*rA));
-    *botDegree = acosf((rB*rB + rA*rA - botA*botA) / (2*rB*rA));
+    float rG = rA + rB;
+    *topDegree = 180 - tanf(rB/rA) - tan(rA/rB);
+    *botDegree = 180 - tanf(rA/rG) - tan(rG/rA);
+    // if yKnee is < 0, topDegree is negative
+    if(yKnee < 0){
+        *topDegree = 0 - *topDegree;
+    }
     // ajust to the real degrees
     switch(leg){
         case FR :
@@ -128,12 +124,12 @@ int getDegrees(unsigned int leg, float xB, float yB, float* topDegree, float* bo
             break;
         default:
             //param leg is not a leg !
-            printf("param leg = %d is not a leg !", (int)leg);
+            printf("param leg = %d is not a leg !\n", (int)leg);
             return -2;
     }
     //If impossible degrees
     if(*topDegree > 180 || *topDegree < 0 || *botDegree > 180 || *botDegree < 0){
-        printf("Impossible degrees ! (upper : %f , lower : %f)", *topDegree, *botDegree);
+        printf("Impossible degrees ! (upper : %f , lower : %f)\n", *topDegree, *botDegree);
         return -3;
     }
 
