@@ -78,7 +78,7 @@ int getDegrees(unsigned int leg, float xB, float yB, float* topDegree, float* bo
         return 0;
     }
 
-    float delta = sqrt( (double)((b*b) - (4*a*c)) ); // Δ = √(b²-4ac)
+    float delta = (b*b) - (4*a*c); // Δ = b²-4ac
 
     //solutions
     if(delta > 0){
@@ -157,9 +157,6 @@ int main () {
 
     //int Speed = 500; // time of a loop in ms
 
-    moveToDegree(16, 0);
-	delay(1800000); //wait 30 minutes
-
     float topDegree;
     float botDegree;
 
@@ -169,8 +166,8 @@ int main () {
             pca9685PWMReset(fd);
             return 1;
         }
-        moveToDegrees(i*2     , topDegree);
-        moveToDegrees(i*2 + 1 , topDegree);
+        moveToDegree(i*2     , topDegree);
+        moveToDegree(i*2 + 1 , topDegree);
     }
 
     printf("ok Final\n");
