@@ -72,9 +72,9 @@ int getDegrees(unsigned int leg, float xB, float yB, float* topDegree, float* bo
     if(yA != yB){
         float div = (xA-xB)/(yA-yB);
         float N = ((rB*rB)-(rA*rA)-(xB*xB)+(xA*xA)-(yB*yB)+(yA*yA)) / (2*(yA-yB));
-        a = div * div + 1;
+        a = (div * div) + 1;
         b = (2*yA*div) - (2*N*div) - (2*xA);
-        c = (xB*xB) + (yB*yB) + (N*N) - (rA*rA) - (2*yA*N);
+        c = (xA*xA) + (yA*yA) + (N*N) - (rA*rA) - (2*yA*N);
     } else {
         // don't div by 0
         printf("Div by 0 ! => yA == yB !\n");
@@ -87,9 +87,9 @@ int getDegrees(unsigned int leg, float xB, float yB, float* topDegree, float* bo
     float xKnee = (0 - b - rdelta) / (2*a);
     float x2 = (0 - b + rdelta) / (2*a);
 
-    // if we have 2 solutions, Knee position is intersection with the largest x :
+    // if we have 2 solutions, Knee position is intersection with the smallest x :
     if(xKnee > x2)
-        xKnee = x2; // get the largest x
+        xKnee = x2; // get the smallest x
 
 
     ////////////////////////////////////////////////////////
