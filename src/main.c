@@ -58,10 +58,10 @@ int getDegrees(unsigned int leg, float xB, float yB, float* topDegree, float* bo
     float yA = 0.0;
 
     float distA = rA + rB;
-    float distB = sqrt( (double)((xKnee+(B))*(xKnee+(rA+rB)) + yKnee*yKnee) );
-    float distC = sqrt( (double) (xB*xB + yB*yB) );
+    float distB;
+    float distC = sqrt( (double)(xB*xB + yB*yB) );
 
-    if(distD > distA){
+    if(distC > distA){
         // there is no solution, the two circles do not intersect, impossible movement
         printf("Impossible position ! (%f , %f)\n", xB, yB);
         return -1;
@@ -101,14 +101,15 @@ int getDegrees(unsigned int leg, float xB, float yB, float* topDegree, float* bo
     float yKnee = yA + sqrt( fabs( (double)((rA*rA) - ((xKnee-xA)*(xKnee-xA))) ) ) ; //first result
     if(yKnee != yB + sqrt( fabs( (double)((rB*rB) - ((xKnee-xB)*(xKnee-xB))) ) ) )
         yKnee = yA - sqrt( fabs( (double)((rA*rA) - ((xKnee-xA)*(xKnee-xA))) ) ); //second result
+    printf("\txKnee => %f\n\tyKnee => %f\n", xKnee, yKnee);
 
 
     ////////////////////////////////////////////
     // Calculate the angle of 2 servomotors : //
+    distB = sqrt( (double)((xKnee+(rA+rB))*(xKnee+(rA+rB)) + yKnee*yKnee) );
     *topDegree = acosf((distA*distA + rA*rA - distB*distB) / (2*distA*rA));
     *botDegree = acosf((rB*rB + rA*rA - distC*distC) / (2*rB*rA));
-    printf("\topDegree => %d\n\tbotDegree => %d\n", *topDegree, *botDegree);
-    printf("\txKnee => %d\n\tyKnee => %d\n", xKnee, yKnee);
+    printf("\topDegree => %f\n\tbotDegree => %f\n", *topDegree, *botDegree);
 
     // if yKnee is < 0, topDegree is negative
     if(yKnee < 0){
@@ -169,7 +170,7 @@ int main () {
             return 1;
         }
         moveToDegree(i*2     , topDegree);
-        moveToDegree(i*2 + 1 , topDegree);
+        moveToDegree(i*2 + 1 , botDegree);
     }
 
     printf("ok Final\n");
