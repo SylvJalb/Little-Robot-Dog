@@ -122,12 +122,14 @@ int getDegrees(unsigned int leg, float xB, float yB, float* topDegree, float* bo
             break;
         case FL :
             *topDegree = 180 - *topDegree - FULGAP;
+            *botDegree = 180 - *botDegree;
             break;
         case BR :
             *topDegree += BURGAP;
             break;
         case BL :
-            *topDegree -= 180 - *topDegree - BULGAP;
+            *topDegree = 180 - *topDegree - BULGAP;
+            *botDegree = 180 - *botDegree;
             break;
         default:
             //param leg is not a leg !
