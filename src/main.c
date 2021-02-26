@@ -71,21 +71,16 @@ int getDegrees(unsigned int leg, float xB, float yB, float* topDegree, float* bo
 
     ////////////////////////////////////////////////////////
     // Calculate the x intersections of the two circles : // (the x Knee postition)
-    float a;
-    float b;
-    float c;
-
-    if(yA != yB){
-        float div = (xA-xB)/(yA-yB);
-        float N = ((rB*rB)-(rA*rA)-(xB*xB)+(xA*xA)-(yB*yB)+(yA*yA)) / (2*(yA-yB));
-        a = (div * div) + 1;
-        b = (2*yA*div) - (2*N*div) - (2*xA);
-        c = (xA*xA) + (yA*yA) + (N*N) - (rA*rA) - (2*yA*N);
-    } else {
+    if(yA == yB){
         // don't div by 0
         printf("Div by 0 ! => yA == yB !\n");
         return -1;
     }
+    float div = (xA-xB)/(yA-yB);
+    float N = ((rB*rB)-(rA*rA)-(xB*xB)+(xA*xA)-(yB*yB)+(yA*yA)) / (2*(yA-yB));
+    float a = (div * div) + 1;
+    float b = (2*yA*div) - (2*N*div) - (2*xA);
+    float c = (xA*xA) + (yA*yA) + (N*N) - (rA*rA) - (2*yA*N);
 
     float rdelta = sqrt( (double) ((b*b) - (4*a*c)) ); // √Δ = √(b²-4ac)
     printf("\trdelta => %f\n", rdelta);
@@ -103,12 +98,8 @@ int getDegrees(unsigned int leg, float xB, float yB, float* topDegree, float* bo
 
     ////////////////////////////////////////////////////////
     // Calculate the y intersections of the two circles : // (the x Knee postition)
-    float yKnee = yA + sqrt( fabs( (double)((rA*rA) - ((xKnee-xA)*(xKnee-xA))) ) ) ; //first result
+    float yKnee = N - (xKnee * div);
     printf("\tyKnee => %f\n", yKnee);
-    if(yKnee != yB + sqrt( fabs( (double)((rB*rB) - ((xKnee-xB)*(xKnee-xB))) ) ) ){
-        yKnee = yA - sqrt( fabs( (double)((rA*rA) - ((xKnee-xA)*(xKnee-xA))) ) ); //second result
-        printf("\tyKnee => %f (CHANGE yKnee)\n", yKnee);
-    }
 
 
     ////////////////////////////////////////////
@@ -149,7 +140,7 @@ int getDegrees(unsigned int leg, float xB, float yB, float* topDegree, float* bo
         printf("Impossible degrees ! (upper : %f , lower : %f)\n", *topDegree, *botDegree);
         return -3;
     }
-
+    printf("Final return : topDegree => %f ||| botDegree => %f\n", *topDegree, *botDegree);
 
     //all went well
     return 0;
@@ -175,7 +166,7 @@ int main () {
 
     // GO TO INITIAL POSITION
     for(unsigned int i = FR ; i <= BL ; i += 1){
-        if(getDegrees(i, 10.0, -150.0, &topDegree, &botDegree) != 0){
+        if(getDegrees(i, 50.0, -100.0, &topDegree, &botDegree) != 0){
             pca9685PWMReset(fd);
             return 1;
         }
