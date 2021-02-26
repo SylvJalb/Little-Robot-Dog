@@ -7,6 +7,8 @@
 #include <wiringPi.h>
 #include <pca9685.h>
 
+#define PI 3.14159265
+
 #define PIN_BASE 300
 #define PWM_RANGE_MIN 101 // tick when servo is at 0°
 #define PWM_RANGE_MAX 599 // tick when servo is at 180°
