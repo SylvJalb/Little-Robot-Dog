@@ -104,13 +104,14 @@ int getDegrees(unsigned int leg, float xB, float yB, float* topDegree, float* bo
 
     ////////////////////////////////////////////
     // Calculate the angle of 2 servomotors : //
+    double convertToDegree = 180.0 / PI;
     distB = sqrt( (double)((xKnee+distA)*(xKnee+distA) + yKnee*yKnee) );
-    *topDegree = acosf((distA*distA + rA*rA - distB*distB) / (2*distA*rA));
-    *botDegree = acosf((rB*rB + rA*rA - distC*distC) / (2*rB*rA));
+    *topDegree = acosf((distA*distA + rA*rA - distB*distB) / (2*distA*rA)) * convertToDegree;
+    *botDegree = acosf((rB*rB + rA*rA - distC*distC) / (2*rB*rA)) * convertToDegree;
     printf("\tdistA => %f\n\tdistB => %f\n\tdistC => %f\n\ttopDegree => %f\n\tbotDegree => %f\n", distA, distB, distC, *topDegree, *botDegree);
 
     // if yKnee is < 0, topDegree is negative
-    if(yKnee < 0){
+    if(yKnee > 0){
         *topDegree = 0 - *topDegree;
         printf("\ttopDegree => %f (REVERSE <-- yKnee < 0)\n", *topDegree);
     }
