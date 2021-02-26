@@ -107,7 +107,7 @@ int getDegrees(unsigned int leg, float xB, float yB, float* topDegree, float* bo
     printf("\tyKnee => %f\n", yKnee);
     if(yKnee != yB + sqrt( fabs( (double)((rB*rB) - ((xKnee-xB)*(xKnee-xB))) ) ) ){
         yKnee = yA - sqrt( fabs( (double)((rA*rA) - ((xKnee-xA)*(xKnee-xA))) ) ); //second result
-        printf("\tyKnee => %f (CHANGE yKnee)\n", xKnee, yKnee);
+        printf("\tyKnee => %f (CHANGE yKnee)\n", yKnee);
     }
 
 
@@ -121,7 +121,7 @@ int getDegrees(unsigned int leg, float xB, float yB, float* topDegree, float* bo
     // if yKnee is < 0, topDegree is negative
     if(yKnee < 0){
         *topDegree = 0 - *topDegree;
-        printf("\ttopDegree => %f (REVERSE <-- yKnee < 0)\n", *topDegree)
+        printf("\ttopDegree => %f (REVERSE <-- yKnee < 0)\n", *topDegree);
     }
     // ajust to the real degrees
     switch(leg){
