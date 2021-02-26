@@ -45,7 +45,7 @@
 void moveToDegree(unsigned int servo, float degree){
     int tick = (int)(((degree / 180.0) * (PWM_RANGE_MAX - PWM_RANGE_MIN)) + PWM_RANGE_MIN);
 	pwmWrite(PIN_BASE + servo, tick);
-    printf("Servo n°%d to the position : %f degree -> %d tick\n", servo, degree, tick);
+    //printf("Servo n°%d to the position : %f degree -> %d tick\n", servo, degree, tick);
 }
 
 // Function that retrieves the degrees for the servos from x and y coordinates
@@ -63,7 +63,7 @@ int getDegrees(unsigned int leg, float xB, float yB, float* topDegree, float* bo
     float distB;
     float distC = sqrt( (double)(xB*xB + yB*yB) );
 
-    printf("\txB => %f\n\tyB => %f\n\trA => %f\n\trB => %f\n", xB, yB, rA, rB);
+    //printf("\txB => %f\n\tyB => %f\n\trA => %f\n\trB => %f\n", xB, yB, rA, rB);
 
     if(distC > distA){
         // there is no solution, the two circles do not intersect, impossible movement
@@ -85,23 +85,23 @@ int getDegrees(unsigned int leg, float xB, float yB, float* topDegree, float* bo
     float c = (xA*xA) + (yA*yA) + (N*N) - (rA*rA) - (2*yA*N);
 
     float rdelta = sqrt( (double) ((b*b) - (4*a*c)) ); // √Δ = √(b²-4ac)
-    printf("\trdelta => %f\n", rdelta);
+    //printf("\trdelta => %f\n", rdelta);
     //solutions
     float xKnee = (0 - b - rdelta) / (2*a);
     float x2 = (0 - b + rdelta) / (2*a);
-    printf("\txKnee => %f\n", xKnee);
+    //printf("\txKnee => %f\n", xKnee);
 
     // if we have 2 solutions, Knee position is intersection with the smallest x :
     if(xKnee > x2){
         xKnee = x2; // get the smallest x
-        printf("\txKnee => %f (CHANGE xKnee)\n", xKnee);
+        //printf("\txKnee => %f (CHANGE xKnee)\n", xKnee);
     }
 
 
     ////////////////////////////////////////////////////////
     // Calculate the y intersections of the two circles : // (the x Knee postition)
     float yKnee = N - (xKnee * div);
-    printf("\tyKnee => %f\n", yKnee);
+    //printf("\tyKnee => %f\n", yKnee);
 
 
     ////////////////////////////////////////////
@@ -110,12 +110,12 @@ int getDegrees(unsigned int leg, float xB, float yB, float* topDegree, float* bo
     distB = sqrt( (double)((xKnee+distA)*(xKnee+distA) + yKnee*yKnee) );
     *topDegree = acosf((distA*distA + rA*rA - distB*distB) / (2*distA*rA)) * convertToDegree;
     *botDegree = acosf((rB*rB + rA*rA - distC*distC) / (2*rB*rA)) * convertToDegree;
-    printf("\tdistA => %f\n\tdistB => %f\n\tdistC => %f\n\ttopDegree => %f\n\tbotDegree => %f\n", distA, distB, distC, *topDegree, *botDegree);
+    //printf("\tdistA => %f\n\tdistB => %f\n\tdistC => %f\n\ttopDegree => %f\n\tbotDegree => %f\n", distA, distB, distC, *topDegree, *botDegree);
 
     // if yKnee is > 0, topDegree is negative
     if(yKnee > 0){
         *topDegree = 0 - *topDegree;
-        printf("\ttopDegree => %f (REVERSE <-- yKnee > 0)\n", *topDegree);
+        //printf("\ttopDegree => %f (REVERSE <-- yKnee > 0)\n", *topDegree);
     }
     // ajust to the real degrees
     switch(leg){
@@ -143,7 +143,7 @@ int getDegrees(unsigned int leg, float xB, float yB, float* topDegree, float* bo
         printf("Impossible degrees ! (upper : %f , lower : %f)\n", *topDegree, *botDegree);
         return -3;
     }
-    printf("Final return : topDegree => %f ||| botDegree => %f\n", *topDegree, *botDegree);
+    //printf("Final return : topDegree => %f ||| botDegree => %f\n", *topDegree, *botDegree);
 
     //all went well
     return 0;
@@ -167,17 +167,33 @@ int main () {
     float topDegree;
     float botDegree;
 
-    // GO TO INITIAL POSITION
-    for(unsigned int i = FR ; i <= BL ; i += 1){
-        if(getDegrees(i, 50.0, -100.0, &topDegree, &botDegree) != 0){
-            pca9685PWMReset(fd);
-            return 1;
+    // DO PUSH UP
+    while(1){
+        for(float j = -90 ; j > -150 ; j = j - 1.0){
+            for(unsigned int i = FR ; i <= BL ; i += 1){
+                if(getDegrees(i, 0.0, -100.0, &topDegree, &botDegree) != 0){
+                    pca9685PWMReset(fd);
+                    return 1;
+                }
+                moveToDegree(i*2     , topDegree);
+                moveToDegree(i*2 + 1 , botDegree);
+            }
+            delai(50);
         }
-        moveToDegree(i*2     , topDegree);
-        moveToDegree(i*2 + 1 , botDegree);
+        for(float j = -150 ; j < -90 ; j = j + 1.0){
+            for(unsigned int i = FR ; i <= BL ; i += 1){
+                if(getDegrees(i, 0.0, -100.0, &topDegree, &botDegree) != 0){
+                    pca9685PWMReset(fd);
+                    return 1;
+                }
+                moveToDegree(i*2     , topDegree);
+                moveToDegree(i*2 + 1 , botDegree);
+            }
+            delai(20);
+        }
     }
 
-    printf("ok Final\n");
+    printf("FIN\n");
 
     return 0;
 }
