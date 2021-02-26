@@ -61,6 +61,8 @@ int getDegrees(unsigned int leg, float xB, float yB, float* topDegree, float* bo
     float distB;
     float distC = sqrt( (double)(xB*xB + yB*yB) );
 
+    printf("\txB => %f\n\tyB => %f\n\trA => %f\n\trB => %f\n", xB, yB, rA, rB);
+
     if(distC > distA){
         // there is no solution, the two circles do not intersect, impossible movement
         printf("Impossible position ! (%f , %f)\n", xB, yB);
@@ -86,34 +88,40 @@ int getDegrees(unsigned int leg, float xB, float yB, float* topDegree, float* bo
     }
 
     float rdelta = sqrt( (double) ((b*b) - (4*a*c)) ); // √Δ = √(b²-4ac)
-
+    printf("\trdelta => %f\n", rdelta);
     //solutions
     float xKnee = (0 - b - rdelta) / (2*a);
     float x2 = (0 - b + rdelta) / (2*a);
+    printf("\txKnee => %f\n", xKnee);
 
     // if we have 2 solutions, Knee position is intersection with the smallest x :
-    if(xKnee > x2)
+    if(xKnee > x2){
         xKnee = x2; // get the smallest x
+        printf("\txKnee => %f (CHANGE xKnee)\n", xKnee);
+    }
 
 
     ////////////////////////////////////////////////////////
     // Calculate the y intersections of the two circles : // (the x Knee postition)
     float yKnee = yA + sqrt( fabs( (double)((rA*rA) - ((xKnee-xA)*(xKnee-xA))) ) ) ; //first result
-    if(yKnee != yB + sqrt( fabs( (double)((rB*rB) - ((xKnee-xB)*(xKnee-xB))) ) ) )
+    printf("\tyKnee => %f\n", yKnee);
+    if(yKnee != yB + sqrt( fabs( (double)((rB*rB) - ((xKnee-xB)*(xKnee-xB))) ) ) ){
         yKnee = yA - sqrt( fabs( (double)((rA*rA) - ((xKnee-xA)*(xKnee-xA))) ) ); //second result
-    printf("\txKnee => %f\n\tyKnee => %f\n", xKnee, yKnee);
+        printf("\tyKnee => %f (CHANGE yKnee)\n", xKnee, yKnee);
+    }
 
 
     ////////////////////////////////////////////
     // Calculate the angle of 2 servomotors : //
-    distB = sqrt( (double)((xKnee+(rA+rB))*(xKnee+(rA+rB)) + yKnee*yKnee) );
+    distB = sqrt( (double)((xKnee+distA)*(xKnee+distA) + yKnee*yKnee) );
     *topDegree = acosf((distA*distA + rA*rA - distB*distB) / (2*distA*rA));
     *botDegree = acosf((rB*rB + rA*rA - distC*distC) / (2*rB*rA));
-    printf("\topDegree => %f\n\tbotDegree => %f\n", *topDegree, *botDegree);
+    printf("\tdistA => %f\n\tdistB => %f\n\tdistC => %f\n\ttopDegree => %f\n\tbotDegree => %f\n", distA, distB, distC, *topDegree, *botDegree);
 
     // if yKnee is < 0, topDegree is negative
     if(yKnee < 0){
         *topDegree = 0 - *topDegree;
+        printf("\ttopDegree => %f (REVERSE <-- yKnee < 0)\n", *topDegree)
     }
     // ajust to the real degrees
     switch(leg){
@@ -167,7 +175,7 @@ int main () {
 
     // GO TO INITIAL POSITION
     for(unsigned int i = FR ; i <= BL ; i += 1){
-        if(getDegrees(i, 0.0, -150.0, &topDegree, &botDegree) != 0){
+        if(getDegrees(i, 10.0, -150.0, &topDegree, &botDegree) != 0){
             pca9685PWMReset(fd);
             return 1;
         }
