@@ -11,7 +11,7 @@
 
 #define PIN_BASE 300
 #define PWM_RANGE_MIN 101 // tick when servo is at 0°
-#define PWM_RANGE_MAX 599 // tick when servo is at 180°
+#define PWM_RANGE_MAX 499 // tick when servo is at 180°
 #define HERTZ 50
 
 //The 4 legs
@@ -112,26 +112,26 @@ int getDegrees(unsigned int leg, float xB, float yB, float* topDegree, float* bo
     *botDegree = acosf((rB*rB + rA*rA - distC*distC) / (2*rB*rA)) * convertToDegree;
     printf("\tdistA => %f\n\tdistB => %f\n\tdistC => %f\n\ttopDegree => %f\n\tbotDegree => %f\n", distA, distB, distC, *topDegree, *botDegree);
 
-    // if yKnee is < 0, topDegree is negative
+    // if yKnee is > 0, topDegree is negative
     if(yKnee > 0){
         *topDegree = 0 - *topDegree;
-        printf("\ttopDegree => %f (REVERSE <-- yKnee < 0)\n", *topDegree);
+        printf("\ttopDegree => %f (REVERSE <-- yKnee > 0)\n", *topDegree);
     }
     // ajust to the real degrees
     switch(leg){
         case FR :
             *topDegree += FURGAP;
+            *botDegree = 180 - *botDegree;
             break;
         case FL :
             *topDegree = 180 - *topDegree - FULGAP;
-            *botDegree = 180 - *botDegree;
             break;
         case BR :
             *topDegree += BURGAP;
+            *botDegree = 180 - *botDegree;
             break;
         case BL :
             *topDegree = 180 - *topDegree - BULGAP;
-            *botDegree = 180 - *botDegree;
             break;
         default:
             //param leg is not a leg !
