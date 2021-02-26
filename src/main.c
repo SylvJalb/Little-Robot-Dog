@@ -33,8 +33,8 @@
 //The legs Gap
 #define FURGAP 40 // Front Upper Right leg degree Gap
 #define FULGAP 40 // Front Upper Left  leg degree Gap
-#define BURGAP 35 // Back  Upper Right leg degree Gap
-#define BULGAP 35 // Back  Upper Left  leg degree Gap
+#define BURGAP 17 // Back  Upper Right leg degree Gap
+#define BULGAP 17 // Back  Upper Left  leg degree Gap
 
 #define LENGTHFU 58.0  // Length of Front Upper legs
 #define LENGTHFL 133.0 // Length of Front Lower legs
