@@ -169,27 +169,27 @@ int main () {
 
     // DO PUSH UP
     while(1){
-        for(float j = -90 ; j > -150 ; j = j - 1.0){
+        for(float j = -100 ; j > -160 ; j = j - 3.0){
             for(unsigned int i = FR ; i <= BL ; i += 1){
-                if(getDegrees(i, 0.0, -100.0, &topDegree, &botDegree) != 0){
+                if(getDegrees(i, 0.0, j, &topDegree, &botDegree) != 0){
                     pca9685PWMReset(fd);
                     return 1;
                 }
                 moveToDegree(i*2     , topDegree);
                 moveToDegree(i*2 + 1 , botDegree);
             }
-            delai(50);
+            delay(40);
         }
-        for(float j = -150 ; j < -90 ; j = j + 1.0){
+        for(float j = -160 ; j < -100 ; j = j + 3.0){
             for(unsigned int i = FR ; i <= BL ; i += 1){
-                if(getDegrees(i, 0.0, -100.0, &topDegree, &botDegree) != 0){
+                if(getDegrees(i, 0.0, j, &topDegree, &botDegree) != 0){
                     pca9685PWMReset(fd);
                     return 1;
                 }
                 moveToDegree(i*2     , topDegree);
                 moveToDegree(i*2 + 1 , botDegree);
             }
-            delai(20);
+            delay(20);
         }
     }
 
